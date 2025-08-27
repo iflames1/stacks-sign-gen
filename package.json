@@ -1,0 +1,14 @@
+{
+	"name": "sign-gen",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@stacks/transactions": "^7.0.6",
+		"@stacks/wallet-sdk": "^7.0.5"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}
