@@ -43,10 +43,39 @@ export const generateSignature = async (
 	});
 };
 
+export const generatePoolSignature = async (
+	depositId: number,
+	amount: number,
+	claimerAddress: string
+) => {
+	const message = tupleCV({
+		"deposit-id": uintCV(depositId),
+		amount: uintCV(amount),
+		winner: principalCV(claimerAddress),
+	});
+	const serialized = serializeCV(message); // Serializes the tuple
+	const buffer = Buffer.from(serialized, "hex");
+	const hash = createHash("sha256").update(buffer).digest(); // creates hashed clarity message
+
+	const privateKey = await getSignerPrivateKey();
+
+	return signMessageHashRsv({
+		messageHash: hash.toString("hex"),
+		privateKey,
+	});
+};
+
 const signature = await generateSignature(
-	5_000_000,
-	"ST1EXAMPLEADDRESS",
-	"ST1EXAMPLE.CONTRACT"
+	200_000_000,
+	"ST1KD2BS98HCAEZQB3A4AXNS2KNAFTXF2CTAB9KVR",
+	"ST1KD2BS98HCAEZQB3A4AXNS2KNAFTXF2CTAB9KVR.MnMKC-sponsored-STX-wars"
 );
 
-console.log("Signature", signature);
+const poolSignature = await generatePoolSignature(
+	1,
+	20_000_000,
+	"ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"
+);
+
+//console.log("Signature", `0x${signature}`);
+console.log("sweeperSignature", `0x${poolSignature}`);
